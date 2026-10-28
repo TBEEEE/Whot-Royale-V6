@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a3d2e">
+<meta name="description" content="WHOT Royale: play Nigerian WHOT online with friends. No signup, no install. Share a room code and play.">
+<title>WHOT Royale</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a3d2e'/%3E%3Cpath d='M16 5l3.2 7.6 8.3.7-6.3 5.4 1.9 8.1L16 22.2 8.9 26.8l1.9-8.1-6.3-5.4 8.3-.7z' fill='%23d9a441'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1 class="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.7 7.3L12 17.8 5.7 21.5l1.7-7.3L2 9.5l7.1-.6z"/></svg>WHOT Royale</h1>
+    <span id="connection" class="pill" role="status">Connecting…</span>
+    <button id="sound" class="ghost small" aria-pressed="true" title="Toggle sound effects">Sound on</button>
+  </header>
+
+  <!-- Welcome -->
+  <section id="welcome" class="sheet">
+    <h2>Join the table</h2>
+    <p class="lede">Nigerian WHOT with friends, anywhere. No signup, no download. Pick a nickname and play.</p>
+    <label>Your nickname
+      <input id="name" maxlength="18" placeholder="e.g. Ada" autocomplete="nickname" enterkeyhint="go">
+    </label>
+    <div class="row">
+      <button id="create" class="primary">Create private room</button>
+      <button id="quick">Quick match</button>
+    </div>
+    <div class="divider"><span>or join a friend</span></div>
+    <div class="row join">
+      <label class="grow">Room code
+        <input id="code" maxlength="6" placeholder="ABC123" autocapitalize="characters" autocomplete="off" spellcheck="false" enterkeyhint="go">
+      </label>
+      <button id="join" class="align-end">Join room</button>
+    </div>
+    <details class="howto">
+      <summary>How to play</summary>
+      <p>Play a card that matches the top card's shape or number. Can't play? Draw one card and your turn ends. Empty your hand to win the round and score the value of everyone else's cards.</p>
+      <ul class="rules">
+        <li><b class="chip">1</b><span><strong>Hold On.</strong> Play again.</span></li>
+        <li><b class="chip">2</b><span><strong>Pick Two.</strong> Next player draws 2 and loses their turn.</span></li>
+        <li><b class="chip">5</b><span><strong>Pick Three.</strong> Next player draws 3 and loses their turn.</span></li>
+        <li><b class="chip">8</b><span><strong>Suspension.</strong> The next player is skipped.</span></li>
+        <li><b class="chip">14</b><span><strong>General Market.</strong> Everyone else draws 1.</span></li>
+        <li><b class="chip wild">20</b><span><strong>WHOT.</strong> Plays on anything. You choose the next shape.</span></li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- Room -->
+  <section id="room" class="hidden">
+    <div class="bar">
+      <div class="code">
+        <span class="muted">Room</span>
+        <strong id="roomcode" aria-label="Room code"></strong>
+      </div>
+      <button id="copy" class="ghost small" aria-label="Copy invite link">Invite</button>
+      <button id="leave" class="ghost small">Leave</button>
+    </div>
+
+    <ul id="seats" class="seats" aria-label="Players"></ul>
+
+    <!-- Lobby -->
+    <div id="lobby" class="sheet">
+      <p id="lobbyStatus" class="lede"></p>
+      <label class="toggle" id="publicLabel">
+        <input id="publicRoom" type="checkbox">
+        <span>List this room for Quick match</span>
+      </label>
+      <button id="start" class="primary">Start game</button>
+      <p id="lobbyHint" class="muted"></p>
+    </div>
+
+    <!-- Table -->
+    <div id="game" class="hidden">
+      <div class="felt">
+        <div id="turn" class="turn" aria-live="polite"></div>
+        <div class="clock" aria-hidden="true"><i id="clockbar"></i></div>
+        <div class="piles">
+          <div class="pile">
+            <button id="draw" class="card back" aria-label="Draw pile"><span>W</span></button>
+            <small id="drawcount" class="muted"></small>
+          </div>
+          <div class="pile">
+            <div id="top" class="slot"></div>
+            <small id="shapeInfo" class="muted"></small>
+          </div>
+        </div>
+        <p id="instructions" class="hint"></p>
+      </div>
+
+      <div id="shapes" class="shapes hidden" role="dialog" aria-label="Choose the next shape">
+        <p>You played WHOT. Choose the next shape:</p>
+        <div id="shapeButtons"></div>
+        <button id="cancelShape" class="ghost small">Cancel</button>
+      </div>
+
+      <div id="result" class="result hidden" role="status"></div>
+
+      <div class="handwrap">
+        <div class="handhead"><strong>Your hand</strong><span id="handcount" class="muted"></span></div>
+        <div id="hand" class="hand" aria-label="Your cards"></div>
+      </div>
+
+      <div class="sheet slim">
+        <h3>Round activity</h3>
+        <div id="log" class="log"></div>
+        <div id="board" class="board"></div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="sheet slim chat">
+      <h3>Table chat</h3>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <div class="row nowrap">
+        <input id="message" maxlength="120" placeholder="Oya, play!" aria-label="Chat message" enterkeyhint="send">
+        <button id="send">Send</button>
+      </div>
+      <div class="quick">
+        <button data-reaction="Oya, play!">Oya, play!</button>
+        <button data-reaction="No cheating o!">No cheating o!</button>
+        <button data-reaction="Last card!">Last card!</button>
+        <button data-reaction="Well played!">Well played!</button>
+      </div>
+    </div>
+  </section>
+
+  <p id="error" role="alert"></p>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>

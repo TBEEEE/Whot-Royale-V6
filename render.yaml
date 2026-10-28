@@ -1,0 +1,15 @@
+# Render Blueprint: one always-on Node web service. Keep ONE instance:
+# rooms live in server memory, so do not scale horizontally.
+services:
+  - type: web
+    name: whot-royale
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TURN_SECONDS
+        value: "45"
